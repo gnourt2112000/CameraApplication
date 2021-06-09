@@ -60,7 +60,7 @@ public class Camera implements Show{
 		this.height = height;
 	}
 
-	public PlaneEquation PlaneIncludePeakIn(SpaceFigure cuboid){
+	public PlaneEquation planeIncludePeakIn(SpaceFigure cuboid){
 		if(cuboid.planeXNotEqualZero().isIncludePoint(peakPoint))
 			return cuboid.planeXNotEqualZero();
 		else if(cuboid.planeYNotEqualZero().isIncludePoint(peakPoint))

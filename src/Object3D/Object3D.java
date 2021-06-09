@@ -91,7 +91,7 @@ public class Object3D extends SpaceFigure {
 
     public List<PlaneEquation> twoFaceDirectCamera(Camera c, SpaceFigure cuboid){
         List<PlaneEquation> list = new ArrayList<>(2);
-        PlaneEquation p1 = c.PlaneIncludePeakIn(cuboid);
+        PlaneEquation p1 = c.planeIncludePeakIn(cuboid);
         PlaneEquation p2 = new PlaneEquation(this.getPointList().get(0),p1.getA(),p1.getB(),p1.getC());
         list.add(p2);
         for(int i = 0 ;i<this.getPointList().size();i++){
