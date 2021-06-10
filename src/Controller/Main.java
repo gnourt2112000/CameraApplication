@@ -29,154 +29,154 @@ public class Main {
         while(true) {
           showMenu();
           System.out.println("Your choice: ");
-          int key = sc.nextInt();	
-          
-          switch (key) {
-		case 0: {
-			sc.close();
-			System.exit(0);
-			break;
-		}
-		case 1: {
-			boolean check = true;
-	        
-	        do {
-	        	check = true;
-	        	System.out.println("Nhap url:");
-				url =  sc.next();
-		        try {
-		        	listLine = readInput(url);
-			        
-			        String line1 = listLine.get(0);
-			        room = makeRoom(line1);
-			        int numObject = Integer.parseInt(listLine.get(1));
-			        
-			        listObject3ds = makeListObject3Ds(listLine);
-			        room.setObject3DList(listObject3ds);
+          int key = sc.nextInt();
+			switch (key) {
+				case 0: {
+					sc.close();
+					System.exit(0);
+					break;
+				}
+				case 1: {
+					boolean check = true;
 
-			        listCameras = makeListCameras(listLine, numObject);
-			        room.setCameraList(listCameras);
+					do {
+						check = true;
+						System.out.println("Nhap url:");
+						url =  sc.next();
+						try {
+							listLine = readInput(url);
 
-			        if (room.isRectangularCuboid() && room.isIncludeOrigin() && room.allCoordinatesGreaterZero()){
-			        	System.out.println("Check Room: true");
+							String line1 = listLine.get(0);
+							room = makeRoom(line1);
+							int numObject = Integer.parseInt(listLine.get(1));
+
+							listObject3ds = makeListObject3Ds(listLine);
+							room.setObject3DList(listObject3ds);
+
+							listCameras = makeListCameras(listLine, numObject);
+							room.setCameraList(listCameras);
+
+							if (room.isRectangularCuboid() && room.isIncludeOrigin() && room.allCoordinatesGreaterZero()){
+								System.out.println("Check Room: true");
+							}else {
+								System.out.println("Check Room: false");
+								check = false;
+							}
+
+							for(int i = 0; i< numObject ; i++) {
+								if(listObject3ds.get(i).isRectangularCuboid() && room.isIncludeObject3D(listObject3ds.get(i)) && listObject3ds.get(i).isInvalidPosition(listObject3ds) ) {
+									System.out.println("Object " + (i + 1) + ": valid");
+
+								}else {
+									System.out.println("Object " + (i + 1) + ": invalid");
+									check= false;
+								}
+							}
+
+							for(int i = 0; i< listCameras.size() ; i++) {
+								if(room.isIncludeCamera(listCameras.get(i))) {
+									System.out.println("Camera " + (i + 1) + " valid");
+								}else {
+									System.out.println("Camera " + (i + 1) + " invalid");
+									check = false;
+								}
+							}
+
+							done1 = true;
+						} catch (Exception e) {
+							System.err.println("File not found!");
+						}
+					}while(!check);
+
+					break;
+				}
+				case 2:{
+					if(!done1) {
+						System.out.println("No input file. Choose again!!");
+						break;
+					}
+
+					System.out.println("Room axis: ");
+					for(Point point : room.getPointList()) {
+						point.show();
+					}
+					System.out.println("\nObjects axis:");
+					for(int i = 0;i < listObject3ds.size() ; i++ ) {
+						System.out.println("Object " + ( i + 1 ) + " : " );
+						for(Point point: listObject3ds.get(i).getPointList()) {
+							point.show();
+						}
+					}
+
+					System.out.println("\nCamera axis: ");
+					for(int i = 0; i < listCameras.size(); i++) {
+						System.out.println("Camera " + ( i + 1) + " : ");
+						listCameras.get(i).show();
+					}
+
+					break;
+				}
+				case 3:{
+					if(!done1) {
+						System.out.println("No input file. Choose again!!");
+						break;
+					}
+					System.out.println("Enter point: ");
+					System.out.println("Enter the X-axis");
+					Double x = sc.nextDouble();
+					System.out.println("Enter the Y-axis");
+					Double y = sc.nextDouble();
+					System.out.println("Enter the Z-axis");
+					Double z = sc.nextDouble();
+					Point point = new Point(x, y, z);
+
+					int checkObj = 0;
+					if(room.isIncludePoint(point)) {
+						for(Object3D tmpO : listObject3ds) {
+							if(tmpO.isIncludePoint(point))
+								checkObj=1;
+						}
+
+						if (checkObj == 1)   {
+							System.out.println("thuoc Vat");
+						}else if(point.isSeenByCamera(listCameras,room,listObject3ds)) {
+							System.out.println("thuoc Cam va khong thuoc vat");
+						}else {
+							System.out.println("chi thuoc phong");
+						}
 					}else {
-						System.out.println("Check Room: false");
-						check = false;
+						System.out.println("nam ngoai phong");
 					}
-			        
-			        for(int i = 0; i< numObject ; i++) {
-			        	if(listObject3ds.get(i).isRectangularCuboid() && room.isIncludeObject3D(listObject3ds.get(i)) && listObject3ds.get(i).isInvalidPosition(listObject3ds) ) {
-			        		System.out.println("Object " + (i + 1) + ": valid");
 
-			        	}else {
-							System.out.println("Object " + (i + 1) + ": invalid");
-							check= false;
-						}
-			        }
-			        
-			        for(int i = 0; i< listCameras.size() ; i++) {
-			        	if(room.isIncludeCamera(listCameras.get(i))) {
-			        		System.out.println("Camera " + (i + 1) + " valid");
-			        	}else {
-			        		System.out.println("Camera " + (i + 1) + " invalid");
-			        		check = false;
-						}
-			        }
-			        
-			        done1 = true;
-				} catch (Exception e) {
-					System.err.println("File not found!");
+					break;
 				}
-	        }while(!check);
-			
-	        break;
-		}
-		case 2:{
-			if(!done1) {
-				System.out.println("No input file. Choose again!!");
-				break;
-			}
-			
-			System.out.println("Room axis: ");
-			for(Point point : room.getPointList()) {
-				point.show();
-			}
-			System.out.println("\nObjects axis:");
-			for(int i = 0;i < listObject3ds.size() ; i++ ) {
-				System.out.println("Object " + ( i + 1 ) + " : " );
-				for(Point point: listObject3ds.get(i).getPointList()) {
-					point.show();
-				}
-			}
-			
-			System.out.println("\nCamera axis: ");
-			for(int i = 0; i < listCameras.size(); i++) {
-				System.out.println("Camera " + ( i + 1) + " : ");
-				listCameras.get(i).show();
-			}
-			
-			break;
-		}
-		case 3:{
-			if(!done1) {
-				System.out.println("No input file. Choose again!!");
-				break;
-			}
-			System.out.println("Enter point: ");
-			System.out.println("Enter the X-axis");
-			Double x = sc.nextDouble();
-			System.out.println("Enter the Y-axis");
-			Double y = sc.nextDouble();
-			System.out.println("Enter the Z-axis");
-			Double z = sc.nextDouble();
-			Point point = new Point(x, y, z);
-			
-	    	int checkObj = 0;
-	    	if(room.isIncludePoint(point)) {
-	    		for(Object3D tmpO : listObject3ds) {
-	    			if(tmpO.isIncludePoint(point))
-	    				checkObj=1;
-	    		}
-	    		
-	    		if (checkObj == 1)   {
-	    			System.out.println("thuoc Vat");
-	    		}else if(point.isSeenByCamera(listCameras,room,listObject3ds)) {
-	    			System.out.println("thuoc Cam va khong thuoc vat");
-	    		}else {
-	    			System.out.println("chi thuoc phong");
-	    		}
-	    	}else {
-				System.out.println("nam ngoai phong");
-			}
-	    	
-	    	break;
-		}
-		case 4:
-			if(!done1) {
-				System.out.println("No input file. Choose again!!");
-				break;
-			}
-			double totalPoint = 0;
-			double seenPoint = 0;
-
-			for(double x = room.xMin();x<=room.xMax();x=x+0.005)
-			{
-				for(double y = room.yMin();y<=room.yMax();y=y+0.005)
-				{
-					for(double z = room.zMin();z<=room.zMax();z=z+0.005){
-						totalPoint++;
-						Point point = new Point(x,y,z);
-						if(point.isSeenByCamera(listCameras,room,listObject3ds))
-							seenPoint++;
+				case 4:
+					if(!done1) {
+						System.out.println("No input file. Choose again!!");
+						break;
 					}
-				}
+					double totalPoint = 0;
+					double seenPoint = 0;
 
+					for(double x = room.xMin();x<=room.xMax();x=x+0.005)
+					{
+						for(double y = room.yMin();y<=room.yMax();y=y+0.005)
+						{
+							for(double z = room.zMin();z<=room.zMax();z=z+0.005){
+								totalPoint++;
+								Point point = new Point(x,y,z);
+								if(point.isSeenByCamera(listCameras,room,listObject3ds))
+									seenPoint++;
+							}
+						}
+
+					}
+
+					System.out.println("Result: "+(seenPoint/totalPoint)*100+ "%");
+				default:
+					break;
 			}
 
-			System.out.println("Result: "+(seenPoint/totalPoint)*100+ "%");
-		default:
-			break;
-		}
         }
        
         

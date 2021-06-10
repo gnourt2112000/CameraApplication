@@ -135,6 +135,12 @@ public class SpaceFigure {
     }
 
     public boolean isRectangularCuboid(){
+        for(int i = 0; i<getPointList().size();i++)
+            for(int j = 0; j<getPointList().size() && j!=i ;j++){
+                if(getPointList().get(i).equals(getPointList().get(j)))
+                    return false;
+            }
+
         int countX =0;
         int countY =0;
         int countZ =0;
